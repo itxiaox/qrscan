@@ -22,7 +22,7 @@ import android.os.Message;
 
 import com.google.zxing.Result;
 import com.jishimed.zxing.R;
-import com.jishimed.zxing.activity.CaptureFragment;
+import com.jishimed.zxing.ui.CaptureFragment;
 import com.jishimed.zxing.camera.CameraManager;
 import com.jishimed.zxing.decode.DecodeThread;
 

@@ -1,4 +1,4 @@
-package com.jishimed.zxing.activity;
+package com.jishimed.zxing.ui;
 
 import android.app.Dialog;
 import android.graphics.Color;

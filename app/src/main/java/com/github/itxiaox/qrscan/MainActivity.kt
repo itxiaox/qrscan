@@ -3,7 +3,7 @@ package com.github.itxiaox.qrscan
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.jishimed.zxing.activity.CaptureFragment
+import com.jishimed.zxing.ui.CaptureFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {

@@ -21,7 +21,7 @@ import android.os.Looper;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
-import com.jishimed.zxing.activity.CaptureFragment;
+import com.jishimed.zxing.ui.CaptureFragment;
 
 import java.util.ArrayList;
 import java.util.Collection;
