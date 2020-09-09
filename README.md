@@ -14,10 +14,10 @@
 - 二维码扫描识别功能
 - 条形码扫描识别功能
 - 实例展示
-  ![enter description here](./images/scan_qr.jpg)
-  ![scan_qr_result](./images/scan_qr_result.jpg)
-![scan_bar](./images/scan_bar.jpg)
-![scan_bar_result](./images/scan_bar_result.jpg)
+ ![扫描二维码](./images/scan_qr.jpg)
+ ![二维码识别结果](./images/scan_qr_result.jpg)
+![扫描条形码](./images/scan_bar.jpg)
+![条形码识别结果](./images/scan_bar_result.jpg)
 ## 二. 使用方法
 
 ### 1. gradle 引用
