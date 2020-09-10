@@ -59,7 +59,7 @@
         android:layout_marginTop="14dp"
         android:textColor="#D5D0D5"
         android:textSize="14sp"
-        android:text="请扫描检查单二维码"/>
+        android:text="请将二维码放在扫描区"/>
 
     <TextView
         android:id="@+id/tv_capture_input"

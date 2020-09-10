@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 package com.jishimed.zxing.ui;
+
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -34,6 +41,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.jishimed.zxing.R;
@@ -58,79 +66,84 @@ import java.lang.reflect.Field;
 public final class CaptureFragment extends BaseDialogFragment<String> implements SurfaceHolder.Callback {
 
     private static final String TAG = CaptureFragment.class.getSimpleName();
-
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
     private InactivityTimer inactivityTimer;
     private BeepManager beepManager;
-
     private SurfaceView scanPreview = null;
     private RelativeLayout scanContainer;
     private RelativeLayout scanCropView;
     private ImageView scanLine;
     TextView tv_capture_show;
-
     private Rect mCropRect = null;
     private boolean isHasSurface = false;
-
     public Handler getHandler() {
         return handler;
     }
-
     public CameraManager getCameraManager() {
         return cameraManager;
     }
-
     InputClickListener inputClickListener;
-    public interface InputClickListener{
-        void onClick(CaptureFragment captureFragment,String msg);
+
+    public interface InputClickListener {
+        void onClick(CaptureFragment captureFragment, String msg);
     }
 
-    public void setInputClickListener(InputClickListener clickListener){
+    public void setInputClickListener(InputClickListener clickListener) {
         this.inputClickListener = clickListener;
     }
 
     private View view;
     private TextView tv_capture_input;
+    private boolean show;
+
+    public void showInputHandle(boolean show) {
+        this.show = show;
+    }
+
+
+    @Override
+    public void onAttachFragment(@NonNull Fragment childFragment) {
+        super.onAttachFragment(childFragment);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-
         Log.d(TAG, "onCreateView: CaptureFragment");
         Window window = getActivity().getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
         view = inflater.inflate(R.layout.activity_capture, container, false);
-        scanPreview =  view.findViewById(R.id.capture_preview);
-        scanContainer = view. findViewById(R.id.capture_container);
-        scanCropView = view. findViewById(R.id.capture_crop_view);
+        scanPreview = view.findViewById(R.id.capture_preview);
+        scanContainer = view.findViewById(R.id.capture_container);
+        scanCropView = view.findViewById(R.id.capture_crop_view);
         scanLine = view.findViewById(R.id.capture_scan_line);
         tv_capture_input = view.findViewById(R.id.tv_capture_input);
         tv_capture_show = view.findViewById(R.id.tv_capture_show);
-
+        tv_capture_show.setVisibility(show ? View.VISIBLE : View.GONE);
         inactivityTimer = new InactivityTimer(getActivity());
         beepManager = new BeepManager(getActivity());
-
-        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT, 0.0f, Animation
-                .RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT,
+        TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_PARENT,
+                0.0f, Animation
+                .RELATIVE_TO_PARENT, 0.0f,
+                Animation.RELATIVE_TO_PARENT, 0.0f, Animation.RELATIVE_TO_PARENT,
                 0.9f);
         animation.setDuration(4500);
         animation.setRepeatCount(-1);
         animation.setRepeatMode(Animation.RESTART);
         scanLine.startAnimation(animation);
 
-        tv_capture_input.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (inputClickListener!=null){
-                    dismiss();
-                    inputClickListener.onClick(CaptureFragment.this,"success");
-                }
+        tv_capture_input.setOnClickListener(v -> {
+            if (inputClickListener != null) {
+                dismiss();
+                inputClickListener.onClick(CaptureFragment.this, "success");
             }
         });
+
         return view;
     }
+
 
     @Override
     public void onCancel(DialogInterface dialog) {
@@ -138,6 +151,7 @@ public final class CaptureFragment extends BaseDialogFragment<String> implements
         if (mListener != null) mListener.onResult(null);
 
     }
+
     @Override
     public void onHiddenChanged(boolean hide) {
 
@@ -145,6 +159,7 @@ public final class CaptureFragment extends BaseDialogFragment<String> implements
                 hide ? ActivityInfo.SCREEN_ORIENTATION_NOSENSOR
                         : ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -160,6 +175,7 @@ public final class CaptureFragment extends BaseDialogFragment<String> implements
 //            }
 //        });
     }
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -205,9 +221,7 @@ public final class CaptureFragment extends BaseDialogFragment<String> implements
     public void onResume() {
         super.onResume();
         cameraManager = new CameraManager(getActivity().getApplication());
-
         handler = null;
-
         if (isHasSurface) {
             // The activity was paused but not stopped, so the surface still
             // exists. Therefore
@@ -218,7 +232,6 @@ public final class CaptureFragment extends BaseDialogFragment<String> implements
             // camera.
             scanPreview.getHolder().addCallback(this);
         }
-
         inactivityTimer.onResume();
     }
 
@@ -276,13 +289,13 @@ public final class CaptureFragment extends BaseDialogFragment<String> implements
 //        this.setResult(RESULT_OK, resultIntent);
 //        CaptureFragment.this.finish();
 
-        if(mListener!=null){
+        if (mListener != null) {
             mListener.onResult(rawResult.getText());
         }
     }
 
-    public void finishFragment(String result){
-        if(mListener!=null){
+    public void finishFragment(String result) {
+        if (mListener != null) {
             mListener.onResult(result);
         }
     }
